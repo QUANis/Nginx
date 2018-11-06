@@ -1,0 +1,63 @@
+Nginx简介
+编写十分轻量级的HTTP服务器 模块化
+是一个高性能的HTPP和反向代理服务器，同时也是一个IMAP/POP3/SMTP代理服务器
+Nginx软件安装
+安装软件前先建立一个用户禁止登陆计算机用于启动服务Nginx服务如果计算机被别入侵了手里只是一个普通用户
+
+useradd -s /sbin/nologin  “XXX”
+解压软件
+tar -xf nginx-1.12.2.tar.gz
+cd nginx-1.12.2
+nginx-1.12.2]#./configure \        
+>--prefix=/usr/local/nginx \           指定安装目录
+>--user=nginx \							指定账户名称					
+>--group=nginx \							指定组名称
+>--with-http_ssl_module					模块加密功能
+
+编译安装
+make && make install             &&如果上一条命令成功在执行install
+
+nginx命令的用法使用
+nginx              启动服务
+nginx -s stop       关闭服务  
+nginx -s reload     重新加载服务文件
+nginx -v            查看软件版本信息
+为了方便后期使用创建软连接
+ln -s /usr/local/nginx/shin/nginx  /sbin/nginx 
+-/usr/local/nginx/				安装目录
+-conf/nginx.conf            主配置文件
+httml          			    网页目录
+logs							日志文件
+sbin/nginx            		启动脚步
+
+查看服务相关端口信息 netstat 用法
+netstat -anulp | grep 80
+
+给Nginx进行SSL加密添加站点（设置网站需要的私钥和证书）
+算法用于非对称算法：RSA DSA 主要应用在网站数据加密
+生成私钥与证书
+cd /usr/local/nginx/conf
+openssl genrsa > cart.key     生成私钥
+opensll req -new -x509 -key cert.pem   生成证书
+修改Nginx配置文件设置网站的虚拟主机
+server {
+listen  443 ssl;
+server_name     www.xxx.com;
+ssl_certificate   cert.pem;    证书
+ssl_certificate_key cert.key;   私钥文件
+
+ssl_session_cache   shared:SSL:1m;
+ssl_session_timeout 5m;
+
+ssl_ciphers HIGH:!aNULL;!MD5;
+ssl_prefer_server_ciphers on;
+
+lcation / {
+   root html;
+index index.html  index.htm;
+}
+}
+重启nginx服务
+nginx -s reload
+
+客户端访问测试firefox https://www.xxxx.com
